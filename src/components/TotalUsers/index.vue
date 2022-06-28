@@ -1,0 +1,97 @@
+<template>
+  <common-card title="累计用户数" value="1,987,503">
+    <template>
+      <div
+        ref="todayUsersChart"
+        :style="{ width: '100%', height: '100%' }"
+      ></div>
+    </template>
+    <template v-slot:footer>
+      <div class="total-users-footer">
+        <span>日同比 </span>
+        <span class="emphasis">8.73%</span>
+        <div class="increase"></div>
+        <span class="month">月同比 </span>
+        <span class="emphasis">35.91%</span>
+        <div class="decrease"></div>
+      </div>
+    </template>
+  </common-card>
+</template>
+
+<script>
+import commonCardMixin from '../../mixins/commonCardMixin'
+export default {
+  name: 'TotalUsers',
+  mixins: [commonCardMixin],
+  mounted() {
+    const chartDom = this.$refs.todayUsersChart
+    const chart = this.$echarts.init(chartDom)
+    chart.setOption({
+      xAxis: {
+        type: 'value',
+        show: false
+      },
+      yAxis: {
+        type: 'category',
+        show: false
+      },
+      series: [
+        {
+          type: 'bar',
+          data: [200],
+          barWidth: 10,
+          itemStyle: {
+            color: '#45c946'
+          }
+        },
+        {
+          type: 'bar',
+          data: [250],
+          itemStyle: {
+            color: '#eee'
+          },
+          barWidth: 10,
+          barGap: '-100%', // 移动第二个柱子的位置实现重叠
+          z: '-1' // 改变这根柱子的层级使这根柱子在下面
+        },
+        {
+          type: 'custom',
+          data: [200],
+          renderItem: (params, api) => {
+            const value = api.value(0)
+            const endPoint = api.coord([value, 0])
+            return {
+              type: 'path',
+              position: endPoint,
+              shape: {
+                d: '',
+                x: 0,
+                y: 0,
+                width: 20,
+                height: 20
+              }
+            }
+          }
+        }
+      ],
+      grid: {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0
+      }
+    })
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.total-users-footer {
+  display: flex;
+  align-items: center;
+  .month {
+    margin-left: 10px;
+  }
+}
+</style>
