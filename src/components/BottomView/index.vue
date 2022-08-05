@@ -11,20 +11,43 @@
               <div class="chart">
                 <div class="chart-title">搜索用户数</div>
                 <div class="chart-data">93,634</div>
-                <v-chart :options="searchUserOption"></v-chart>
+                <v-chart :option="searchUserOption"></v-chart>
               </div>
               <div class="chart">
                 <div class="chart-title">搜索量</div>
                 <div class="chart-data">198,732</div>
-                <v-chart :options="searchNumberOption"></v-chart>
+                <v-chart :option="searchUserOption"></v-chart>
               </div>
             </div>
-          </div>
-          <div class="table-wrapper">
-            <el-table :data="tableData">
-              <el-table-column></el-table-column>
-            </el-table>
-            <el-pagination></el-pagination>
+            <div class="table-wrapper">
+              <el-table :data="tableData">
+                <el-table-column
+                  prop="rank"
+                  label="排名"
+                  width="180"
+                ></el-table-column>
+                <el-table-column
+                  prop="keyword"
+                  label="关键词"
+                  width="180"
+                ></el-table-column>
+                <el-table-column
+                  prop="count"
+                  label="总搜索量"
+                ></el-table-column>
+                <el-table-column
+                  prop="range"
+                  label="搜索用户数"
+                ></el-table-column>
+              </el-table>
+              <el-pagination
+                layout="prev,pager,next"
+                :total="100"
+                :page-size="4"
+                background
+                @current-change="onPageChange"
+              ></el-pagination>
+            </div>
           </div>
         </template>
       </el-card>
@@ -43,7 +66,9 @@
           </div>
         </template>
         <template>
-          <v-chart :options="categoryOptions"></v-chart>
+          <div class="chart-wrapper">
+            <v-chart :option="categoryOptions"></v-chart>
+          </div>
         </template>
       </el-card>
     </div>
@@ -55,12 +80,189 @@ export default {
   name: 'BottomView',
   data() {
     return {
-      searchUserOption: {},
+      searchUserOption: {
+        xAxis: {
+          type: 'category',
+          boundaryGap: false
+        },
+        yAxis: {
+          show: false
+        },
+        series: [
+          {
+            type: 'line',
+            data: [100, 150, 200, 250, 200, 150, 100, 50, 100, 150],
+            areaStyle: {
+              color: 'rgba(95,187,255,.5)'
+            },
+            lineStyle: {
+              color: 'rgb(95,187,255)'
+            },
+            itemStyle: {
+              opacity: 0
+            },
+            smooth: true
+          }
+        ],
+        grid: {
+          top: 0,
+          left: 0,
+          bottom: 0,
+          right: 0
+        }
+      },
       searchNumberOption: {},
-      tableData: [],
+      tableData: [
+        {
+          id: 1,
+          rank: 1,
+          keyword: '北京',
+          count: 100,
+          users: 90,
+          range: '90%'
+        },
+        {
+          id: 1,
+          rank: 1,
+          keyword: '北京',
+          count: 100,
+          users: 90,
+          range: '90%'
+        },
+        {
+          id: 2,
+          rank: 3,
+          keyword: '北京',
+          count: 100,
+          users: 140,
+          range: '90%'
+        },
+        {
+          id: 2,
+          rank: 3,
+          keyword: '北京',
+          count: 60,
+          users: 50,
+          range: '90%'
+        }
+      ],
       radioSelect: '品类',
       categoryOptions: {}
     }
+  },
+  methods: {
+    onPageChange(page) {
+      console.log(page)
+    },
+    renderPieChart() {
+      const mockData = [
+        {
+          legendname: '粉面粥店',
+          value: 67,
+          percent: '15.40',
+          itemStyle: {
+            color: '#e7e702'
+          },
+          name: '粉面粥店 | 15.40%'
+        },
+        {
+          legendname: '简餐便当',
+          value: 97,
+          percent: '22.30',
+          itemStyle: {
+            color: '#8d7fec'
+          },
+          name: '简餐便当 | 22.30%'
+        },
+        {
+          legendname: '汉堡披萨',
+          value: 92,
+          percent: '21.15',
+          itemStyle: {
+            color: '#5085f2'
+          },
+          name: '汉堡披萨 | 21.15%'
+        }
+      ]
+      this.categoryOptions = {
+        title: [
+          {
+            text: '品类分布',
+            textStyle: {
+              fontSize: 14,
+              color: '#666'
+            },
+            left: 20,
+            top: 20
+          },
+          {
+            text: '累计订单量',
+            subtext: '320',
+            x: '34.5%',
+            y: '42.5%',
+            textStyle: {
+              fontSize: 14,
+              color: '#999'
+            },
+            subtextStyle: {
+              fontSize: 28,
+              color: '#333'
+            },
+            textAlign: 'center'
+          }
+        ],
+        series: [
+          {
+            name: '品类分布',
+            type: 'pie',
+            data: mockData,
+            label: {
+              normal: {
+                show: true,
+                formatter: function (params) {
+                  return params.data.legendname
+                }
+              }
+            },
+            center: ['35%', '50%'],
+            radius: ['45%', '60%'],
+            labelLine: {
+              normal: {
+                length: 5,
+                length2: 3,
+                smooth: true
+              }
+            },
+            clockwise: false,
+            itemStyle: {
+              borderWidth: 4,
+              borderColor: '#fff'
+            }
+          }
+        ],
+        legend: {
+          type: 'scroll',
+          orient: 'vertical',
+          height: 250,
+          right: '10%',
+          top: 'middle',
+          textStyle: {
+            color: '#8c8c8c'
+          }
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: function (params) {
+            const str = `${params.seriesName} <br /> ${params.marker}${params.data.legendname}
+            <br /> 数量:${params.data.value} <br /> 占比${params.data.percent}%`
+            return str
+          }
+        }
+      }
+    }
+  },
+  mounted() {
+    this.renderPieChart()
   }
 }
 </script>
@@ -105,9 +307,27 @@ export default {
         .chart {
           flex: 1;
           .chart-title {
+            color: #999;
+            font-size: 14px;
           }
           .chart-data {
+            font-size: 22px;
+            font-weight: 500;
+            letter-spacing: 2px;
           }
+          .echarts {
+            height: 50px;
+          }
+        }
+      }
+      .table-wrapper {
+        flex: 1;
+        margin-top: 20px;
+        padding: 0 20px 20px;
+        .el-pagination {
+          display: flex;
+          justify-content: flex-end;
+          margin: 15px;
         }
       }
     }
