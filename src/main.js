@@ -5,9 +5,8 @@ import './plugins/element.js'
 import * as echarts from 'echarts'
 import './plugins/vcharts.js'
 import ECharts from 'vue-echarts'
-import { use } from 'echarts/core'
 import './style/index.css'
-
+// import VCharts from 'v-charts'
 // import ECharts modules manually to reduce bundle size
 import {
   CanvasRenderer
@@ -20,7 +19,7 @@ import {
   TooltipComponent
 } from 'echarts/components'
 
-use([
+echarts.use([
   CanvasRenderer,
   BarChart,
   GridComponent,
@@ -29,6 +28,7 @@ use([
 Vue.config.productionTip = false
 Vue.prototype.$echarts = echarts
 Vue.component('v-chart', ECharts)
+// Vue.use(VCharts)
 new Vue({
   router,
   render: h => h(App)

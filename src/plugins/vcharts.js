@@ -1,6 +1,14 @@
 import Vue from 'vue'
 import VELine from 'v-charts/lib/line.common'
+import VEBMap from 'v-charts/lib/bmap.common'
+import VEMap from 'v-charts/lib/map.common'
+// import VELiquidFill from 'v-charts/lib/liquidfill.common'
+import 'v-charts/lib/style.css'
+
 Vue.component('ve-line', VELine)
+Vue.component('ve-map', VEMap)
+Vue.component('ve-bmap', VEBMap)
+// Vue.component('ve-liquidfill', VELiquidFill)
 
 // 按需引入折线图组件
 // |- lib/
